@@ -1,6 +1,6 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom"; // для старой концепции
+// import { createRoot } from "react-dom/client"; // для новой концепции
 
 // ВС-код ругается на древность криэйтСтора, пока не нашел, на что заменить
 import { createStore } from "redux";
@@ -41,14 +41,19 @@ store.subscribe(() => {
 });
 
 // при нажатии на кнопку формируется экшен, которое говорит стору внести запись
-testButton.addEventListener("click", () => {
-  store.dispatch({ type: "WRITE", payload: testInput.value });
-});
+// testButton.addEventListener("click", () => {
+//   store.dispatch({ type: "WRITE", payload: testInput.value });
+// });
 
 // это типа современный синтаксис внедрения компонента приложения
 // const rootElement = document.getElementById("root");
-// createRoot(rootElement).render(<App />);
+// createRoot(rootElement).render(
+//   <Provider store={store}>
+//     <App />
+//   </Provider>
+// );
 
+// переход на старую концепцию
 // а здесь внимательно: передали не сам компонент приложения, а обернутый в провайдер, которому в параметрах дали стор
 ReactDOM.render(
   <Provider store={store}>
