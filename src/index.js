@@ -1,60 +1,43 @@
 import React from "react";
 import ReactDOM from "react-dom"; // для старой концепции
-// import { createRoot } from "react-dom/client"; // для новой концепции
 
 // ВС-код ругается на древность криэйтСтора, пока не нашел, на что заменить
-import { createStore } from "redux";
+import { legacy_createStore as createStore } from "redux";
 import { Provider } from "react-redux";
 
 import App from "./components/App.jsx";
 
-// объявление стора с указанием метода, которым он будет обрабатывать экшены
-const store = createStore(changeStore);
-const initialState = ["redux", "react"];
+// экшен - это JS объект, у которого обязательно должно быть поле type, а так же произвольное количество данные
+// чаще всего из передают в поле payload
+const actionExample = { type: "", payload: "" };
 
-// поиск нереактовых компонентов для показа работы редукса вне реакта
-// они у нас в index.html расположены за границами рутового элемента
-const testUl = document.querySelector(".test-ul");
-const testButton = document.querySelector(".test-button");
-const testInput = document.querySelector(".test-input");
-
-// реализация метода стора, оборабатываюющего экшены
-function changeStore(state = initialState, action) {
+// состояние - это некий объект, или массив, или даже примитивное значение, который хранит некие данные
+// чаще всего это всё же объект, имеющий какие-то конкретные поля
+// обычно описывается дефолтное состояние, оно будет присваиваться в тот момент, когда пользователь открыл приложение
+const initialState = {
+  cash: 0,
+};
+// редьюсер для стора - это функция, принимающая в качестве параметров состояние и экшен
+// при открвтии приложения присваивается дефолтное состояние и оно будет храниться и изменятьсядо тех пор, пока пользователь
+// не обновит страницу или не закроет приложение
+const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case "WRITE":
-      return [...state, action.payload];
-      break;
+    case "ADD_CASH":
+      return { ...state, cash: state.cash + action.payload };
+    case "GET_CASH":
+      return { ...state, cash: state.cash - action.payload };
     default:
-      return state;
+      state;
   }
-}
+};
+// объявление стора с указанием метода, которым он будет обрабатывать экшены
+const store = createStore(reducer);
+// !!!!!! странно, но примеры из видосов без первого диспатча работают, а у меня - нет
+// странно, что инициалСтейта в параметре редьюсера недостаточно, приходится пинать его диспатчем
+// хотя в видосных уроках работало и без этого
+// может это из-за устаревания объекта createStore?
+store.dispatch({ type: "ADD_CASH", payload: 0 });
 
-// это типа подписка компонента на обновление стора
-store.subscribe(() => {
-  testUl.innerHTML = "";
-  testInput.value = "";
-  store.getState().map((item) => {
-    const li = document.createElement("li");
-    li.textContent = item;
-    testUl.appendChild(li);
-  });
-});
-
-// при нажатии на кнопку формируется экшен, которое говорит стору внести запись
-// testButton.addEventListener("click", () => {
-//   store.dispatch({ type: "WRITE", payload: testInput.value });
-// });
-
-// это типа современный синтаксис внедрения компонента приложения
-// const rootElement = document.getElementById("root");
-// createRoot(rootElement).render(
-//   <Provider store={store}>
-//     <App />
-//   </Provider>
-// );
-
-// переход на старую концепцию
-// а здесь внимательно: передали не сам компонент приложения, а обернутый в провайдер, которому в параметрах дали стор
 ReactDOM.render(
   <Provider store={store}>
     <App />
