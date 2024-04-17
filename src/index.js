@@ -4,7 +4,11 @@ import ReactDOM from "react-dom"; // для старой концепции
 
 // ВС-код ругается на древность криэйтСтора, поэтому импортируется легаси-версия
 // добавили поддержку миддлваров
-import { legacy_createStore as createStore, applyMiddleware } from "redux";
+import {
+  legacy_createStore as createStore,
+  applyMiddleware,
+  compose,
+} from "redux";
 import { Provider } from "react-redux";
 
 import App from "./components/App.jsx";
@@ -23,7 +27,16 @@ import { logging } from "./redux/middlewares/logging.jsx";
 
 // объявление стора с указанием метода, которым он будет обрабатывать экшены
 // вторым аргументом передаётся объект поддержки миддлваров, параметром которого становится наша функция
-const store = createStore(reducer, applyMiddleware(logging));
+// у createStor-а 3 параметра: первый - редьюсер, второй - preloadedState (его пока не рассматриваем и вместо него вгоним пустой массив)
+// а третий - как раз для миддварей
+const store = createStore(
+  reducer,
+  [],
+  compose(
+    applyMiddleware(logging),
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  )
+);
 
 // это типа современный синтаксис внедрения компонента приложения
 // const rootElement = document.getElementById("root");
