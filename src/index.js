@@ -7,21 +7,20 @@ import { legacy_createStore as createStore } from "redux";
 import { Provider } from "react-redux";
 
 import App from "./components/App.jsx";
+import reducer from "./redux/reducers/index.jsx";
 
-const initialState = ["redux", "react"];
+// на этом шаге усложняется редьюсер - он становится комбинированным
+// усложним структуру стора - станет объектом с полями-массивами
+// но инициализация происходит теперь в отдельных редьюсерах, поэтому удаляем за ненадобностью
 
 // редьюсер - реализация метода стора, оборабатываюющего экшены
-function reducerChangeStore(state = initialState, action) {
-  switch (action.type) {
-    case "WRITE":
-      return [...state, action.payload];
-    default:
-      return state;
-  }
-}
+// Redux предлагает разделять редьюсеры по зонам ответственности: в нашем случа,
+// чтобы для каждого поля-массива был свой обработчик, а не мешать всё в кучу
+// поэтому редьюсер отсюда переезжает в папку ./redux/reducers
+// а вместо него мы импортнули комбинированный
 
 // объявление стора с указанием метода, которым он будет обрабатывать экшены
-const store = createStore(reducerChangeStore);
+const store = createStore(reducer);
 
 // это типа современный синтаксис внедрения компонента приложения
 // const rootElement = document.getElementById("root");

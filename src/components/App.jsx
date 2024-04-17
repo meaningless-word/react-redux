@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 class App extends React.Component {
   addLibrary() {
     console.log(this.inputValue.value);
-    this.props.addElement(this.inputValue.value);
+    this.props.addLibrary(this.inputValue.value);
     this.inputValue.value = "";
   }
 
@@ -20,7 +20,7 @@ class App extends React.Component {
         />
         <button onClick={this.addLibrary.bind(this)}>click</button>
         <ul>
-          {this.props.testStore.map((item) => (
+          {this.props.libraries.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
@@ -33,13 +33,14 @@ class App extends React.Component {
 // у коннекта два параметра: mapStateToProps и mapDispatchToProps
 export default connect(
   // mapStateToProps
-  (state) => {
-    return { testStore: state };
-  },
+  (state) => ({
+    libraries: state.libraries,
+    frameworks: state.frameworks,
+  }),
   // mapDispatchToProps
   (dispatch) => ({
-    addElement: (elem) => {
-      dispatch({ type: "WRITE", payload: elem });
+    addLibrary: (elem) => {
+      dispatch({ type: "ADD_LIBRARY", payload: elem });
     },
   })
 )(App);
