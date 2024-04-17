@@ -1,27 +1,24 @@
 import React from "react";
 import { connect } from "react-redux";
 
-// function App() {
-//   return <>Hi</>;
-// }
-
-// от функционального представления к классовому
-// class App extends React.Component {
-//   render() {
-//     console.log(this.props);
-//     return <div>Hi</div>;
-//   }
-// }
-
-//export default App;
-
 class App extends React.Component {
+  addLibrary() {
+    console.log(this.inputValue.value);
+    this.props.addElement(this.inputValue.value);
+    this.inputValue.value = "";
+  }
+
   render() {
     console.log(this.props);
     return (
       <div>
-        <input type="text" />
-        <button>click</button>
+        <input
+          type="text"
+          ref={(input) => {
+            this.inputValue = input;
+          }}
+        />
+        <button onClick={this.addLibrary.bind(this)}>click</button>
         <ul>
           {this.props.testStore.map((item) => (
             <li key={item}>{item}</li>
@@ -40,5 +37,9 @@ export default connect(
     return { testStore: state };
   },
   // mapDispatchToProps
-  (dispatch) => ({})
+  (dispatch) => ({
+    addElement: (elem) => {
+      dispatch({ type: "WRITE", payload: elem });
+    },
+  })
 )(App);
